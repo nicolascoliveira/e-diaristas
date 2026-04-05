@@ -1,16 +1,16 @@
 from django.contrib.auth.forms import UserCreationForm
-from ..forms.usuario_form import UsuarioForm
+from ..forms.usuario_form import CadastroUsuarioForm, EditarUsuarioForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 
 def cadastrar_usuario(request):
     if request.method == 'POST':
-        form_usuario = UsuarioForm(request.POST)
+        form_usuario = CadastroUsuarioForm(request.POST)
         if form_usuario.is_valid():
             form_usuario.save()
             
     else:
-        form_usuario = UsuarioForm()
+        form_usuario = CadastroUsuarioForm()
     return render(request, 'usuarios/form_usuario.html', {'form_usuario': form_usuario})
 
 def listar_usuarios(request):
@@ -21,7 +21,7 @@ def listar_usuarios(request):
 def editar_usuario(request, id):
     User = get_user_model()
     usuario = User.objects.get(id=id)
-    form_usuario = UsuarioForm(request.POST or None, instance=usuario)
+    form_usuario = EditarUsuarioForm(request.POST or None, instance=usuario)
     
     if form_usuario.is_valid():
         form_usuario.save()
