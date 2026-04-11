@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import auth_views, servico_views, usuario_views
-from django.contrib.auth import views as django_auth_views
+from django.urls.base import reverse_lazy
+from .views import servico_views, usuario_views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # Servicos
@@ -16,7 +17,13 @@ urlpatterns = [
     path('usuarios/excluir/<int:id>', usuario_views.excluir_usuario, name='excluir_usuario'),
 
     # Autenticacao
-    path('autenticacao/login', django_auth_views.LoginView.as_view(), name='logar_usuario'),
-    path('autenticacao/logout', auth_views.LogoutGetView.as_view(), name='deslogar_usuario'),
+    path('autenticacao/login', auth_views.LoginView.as_view(), name='logar_usuario'),
+    path('autenticacao/logout',auth_views.LogoutView.as_view(next_page=reverse_lazy('logar_usuario')),name='deslogar_usuario'),
+    path('alterar_senha', auth_views.PasswordChangeView.as_view(success_url=reverse_lazy('listar_servicos')), name='alterar_senha'),
+    path('resetar_senha', auth_views.PasswordResetView.as_view(), name='resetar_senha'),
+    path('resetar_senha/sucesso', auth_views.PasswordResetDoneView.as_view(), name='resetar_senha_sucesso'),
+    path('resetar_senha/<str:uidb64>/<str:token>', auth_views.PasswordResetConfirmView.as_view(), name='resetar_senha_confirmar'),
+    path('resetar_senha/feito', auth_views.PasswordResetCompleteView.as_view(), name='resetar_senha_feito')
+
 
 ]

@@ -2,7 +2,11 @@ from django.contrib.auth.forms import UserCreationForm
 from ..forms.usuario_form import CadastroUsuarioForm, EditarUsuarioForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
+
+
+@login_required
 def cadastrar_usuario(request):
     if request.method == 'POST':
         form_usuario = CadastroUsuarioForm(request.POST)
@@ -13,11 +17,19 @@ def cadastrar_usuario(request):
         form_usuario = CadastroUsuarioForm()
     return render(request, 'usuarios/form_usuario.html', {'form_usuario': form_usuario})
 
+
+
+# Lista Usuarios
+@login_required
 def listar_usuarios(request):
     User = get_user_model()
     usuarios = User.objects.filter(is_superuser = 1)
     return render(request, 'usuarios/lista_usuarios.html', {'usuarios':usuarios})
 
+
+
+# Edita Usuario
+@login_required
 def editar_usuario(request, id):
     User = get_user_model()
     usuario = User.objects.get(id=id)
@@ -28,6 +40,9 @@ def editar_usuario(request, id):
         return redirect('listar_usuarios')
     return render(request, 'usuarios/form_usuario.html', {'form_usuario':form_usuario})
 
+
+# Exclui Usuario
+@login_required
 def excluir_usuario(request, id):
     User = get_user_model()
     usuario = User.objects.get(id=id)
